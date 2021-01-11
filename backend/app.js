@@ -44,4 +44,35 @@ app.delete('/lists/:listID', (req, res)=> {
         .catch(err => console.log(err))
 })
 
+app.get('/lists/:listId/tasks', (req, res)=> {
+    Task.find({ _listId: req.params.listId})
+        .then((list) => res.send(list))
+        .catch(err => console.log(err))
+})
+
+app.post('/lists/:listId/tasks', (req, res)=> {
+    new Task({ 'title' : req.body.title, '_listId': req.params.listId }).save()
+        .then((item)=> res.send(item))
+        .catch(error => console.log(error))
+})
+
+app.get('/lists/:listId/tasks/:taskId', (req, res)=> {
+    Task.find({ _listId: req.params.listId, _id: req.params.taskId})
+        .then(item => res.send(item))
+        .catch(err => console.log(err))
+})
+
+app.patch('/lists/:listId/tasks/:taskId', (req, res)=> {
+    Task.findOneAndUpdate({ _listId: req.params.listId, _id: req.params.taskId}, {$set: req.body })
+        .then(item => res.send(item))
+        .catch(err => console.log(err))
+})
+
+app.delete('/lists/:listId/tasks/:taskId', (req, res)=> {
+    Task.findByIdAndDelete({_listId: req.params.listId, _id: req.params.taskId})
+        .then(item => res.send(item))
+        .catch(err => console.log(err))
+})
+
+
 app.listen(3000, () => console.log('Server is running on port 3000...'))
